@@ -24,6 +24,7 @@ import InfoIcon from '@mui/icons-material/Info'
 import {Link} from 'react-router';
 import { useNavigate } from 'react-router';
 import Detail from '../pages/detail';
+import RightD from '../components/right';
 
 const drawerWidth = 240;
 
@@ -179,7 +180,7 @@ export default function Layout() {
                 <DrawerHeader />
 
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<RightD />} />
                     <Route path="/about" element={<About />} />
                      <Route path="/detail/:id" element={<Detail />} />
                 </Routes>

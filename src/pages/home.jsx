@@ -5,11 +5,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { CardActionArea } from '@mui/material';
 import {Link} from 'react-router';
 
-export default function Home() {
+const  Home = forwardRef((props, ref) =>  {
 
   const [coins, setCoins] = useState([]);
 
@@ -29,14 +29,37 @@ export default function Home() {
         console.log(err.message);
       });
   }, []);
-  //
-                 
+
+    const [visibleCoins, setVisibleCoins] = useState(coins.slice(0, 10));
+
+  // 🔹 Ordena ascendente o descendente
+  const sortCoins = (order) => {
+    const sorted = [...visibleCoins].sort((a, b) => {
+      if (order === "asc") return a.current_price - b.current_price;
+      else return b.current_price - a.current_price;
+    });
+    setVisibleCoins(sorted);
+  };
+
+  // 🔹 Limita la cantidad de monedas mostradas
+  const limitCoins = (limit) => {
+    if (!limit || limit < 1) setVisibleCoins(coins);
+    else setVisibleCoins(coins.slice(0, limit));
+  };
+
+  // 🔹 Exponemos las funciones al componente padre (Right)
+  useImperativeHandle(ref, () => ({
+    sortCoins,
+    limitCoins,
+  }));
+
+
 
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        {coins.map((coin) => (
+        {visibleCoins.map((coin) => (
           <Grid size={2} key={coin.id}>
             <Card >
               <CardActionArea sx={{ display: 'flex', justifyContent: 'space-between' }}  component = {Link} to={'/detail/' + coin.id}>
@@ -70,10 +93,9 @@ export default function Home() {
 
         ))}
 
-
-
-
       </Grid>
     </Box>
   )
-}
+});
+
+export default Home;
