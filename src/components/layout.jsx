@@ -140,7 +140,7 @@ export default function Layout() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    <Typography color="black" variant="h6" noWrap component="div">
                        CRYPTO SHI
                     </Typography>
                 </Toolbar>

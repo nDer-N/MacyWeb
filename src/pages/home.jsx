@@ -7,12 +7,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { CardActionArea } from '@mui/material';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
-const  Home = forwardRef((props, ref) =>  {
+const Home = forwardRef((props, ref) => {
 
   const [coins, setCoins] = useState([]);
-
   useEffect(() => {
     fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd')
       .then((response) => {
@@ -23,16 +22,17 @@ const  Home = forwardRef((props, ref) =>  {
       })
       .then((data) => {
         setCoins(data);
-        console.log(data);
+        
+        setVisibleCoins(data.slice(0, 10));
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, []);
 
-    const [visibleCoins, setVisibleCoins] = useState(coins.slice(0, 10));
+  const [visibleCoins, setVisibleCoins] = useState(coins.slice(0, 10));
 
-  // 🔹 Ordena ascendente o descendente
+ 
   const sortCoins = (order) => {
     const sorted = [...visibleCoins].sort((a, b) => {
       if (order === "asc") return a.current_price - b.current_price;
@@ -41,13 +41,13 @@ const  Home = forwardRef((props, ref) =>  {
     setVisibleCoins(sorted);
   };
 
-  // 🔹 Limita la cantidad de monedas mostradas
+  
   const limitCoins = (limit) => {
     if (!limit || limit < 1) setVisibleCoins(coins);
     else setVisibleCoins(coins.slice(0, limit));
   };
 
-  // 🔹 Exponemos las funciones al componente padre (Right)
+  
   useImperativeHandle(ref, () => ({
     sortCoins,
     limitCoins,
@@ -62,31 +62,31 @@ const  Home = forwardRef((props, ref) =>  {
         {visibleCoins.map((coin) => (
           <Grid size={2} key={coin.id}>
             <Card >
-              <CardActionArea sx={{ display: 'flex', justifyContent: 'space-between' }}  component = {Link} to={'/detail/' + coin.id}>
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <CardContent sx={{ flex: '1 0 auto' }}>
-                  <Typography component="div" variant="h5">
-                    {coin.name}
-                  </Typography>
-                  <Typography variant="subtitle1" component="div" sx={{ color: 'text.secondary' }}>
-                    {coin.symbol}
-                  </Typography>
-                  <Typography variant="subtitle1" component="div" sx={{ color: 'blue' }}>
-                    {coin.current_price} usd
-                  </Typography>
-                  <Typography variant="subtitle1" component="div" sx={{ color: coin.price_change_percentage_24h < 0 ? 'red' : 'green'}}>
-                    {coin.price_change_percentage_24h}
+              <CardActionArea sx={{ display: 'flex', justifyContent: 'space-between' }} component={Link} to={'/detail/' + coin.id}>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <CardContent sx={{ flex: '1 0 auto' }}>
+                    <Typography component="div" variant="h5">
+                      {coin.name}
                     </Typography>
-                  
-                </CardContent>
-              </Box>
-              <CardMedia
-                component="img"
-                sx={{ width: 151 , padding: 2}}
-                image={coin.image}
-                alt={coin.id}
+                    <Typography variant="subtitle1" component="div" sx={{ color: 'text.secondary' }}>
+                      {coin.symbol}
+                    </Typography>
+                    <Typography variant="subtitle1" component="div" sx={{ color: 'blue' }}>
+                      {coin.current_price} usd
+                    </Typography>
+                    <Typography variant="subtitle1" component="div" sx={{ color: coin.price_change_percentage_24h < 0 ? 'red' : 'green' }}>
+                      {coin.price_change_percentage_24h}
+                    </Typography>
 
-              />
+                  </CardContent>
+                </Box>
+                <CardMedia
+                  component="img"
+                  sx={{ width: 151, padding: 2 }}
+                  image={coin.image}
+                  alt={coin.id}
+
+                />
               </CardActionArea>
             </Card>
           </Grid>
